@@ -45,6 +45,7 @@ class CameraActivityKt : AppCompatActivity() {
 
         fotoapparat = Fotoapparat.with(this)
             .into(cameraView)
+            .cameraId("100")
             .lensPosition(back())
             .frameProcessor(FaceFrameProcessor())
             .previewResolution { Resolution(PREVIEW_HEIGHT,PREVIEW_WIDTH) }
@@ -112,6 +113,9 @@ class CameraActivityKt : AppCompatActivity() {
                 val x2 = positionObj["x2"] as Int
                 val y2 = positionObj["y2"] as Int
                 positionRect = Rect(x1, y1, x2, y2)
+
+                Log.d(TAG, "process: quality = $quality")
+
                 if (quality > 86 && (documenName != "Unknown" || hasMrz == true)) {
                     recognized = true
 
