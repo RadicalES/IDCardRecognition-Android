@@ -1,0 +1,3 @@
+[submodule "libfotoapparat"]
+	path = libfotoapparat
+	url = git@github.com:RadicalES/Fotoapparat.git
