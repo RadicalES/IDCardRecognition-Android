@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.kbyai.idcardrecognition"
-        minSdk 24
+        minSdk 28
         targetSdk 35
         versionCode 10
         versionName "1.9"
@@ -49,7 +49,7 @@ dependencies {
 
     // PDF library
     // implementation 'io.fotoapparat:fotoapparat:2.7.0'
-    implementation project(path: ':libfotoapparat')
+    implementation project(path: ':libfotoapparat:fotoapparat')
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
