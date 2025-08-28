@@ -37,7 +37,7 @@
         <activity
             android:name=".ResultActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+             />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.kbyai.idcardrecognition.fileprovider"
