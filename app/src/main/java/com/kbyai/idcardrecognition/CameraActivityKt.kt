@@ -4,6 +4,9 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Bitmap.createBitmap
+import android.graphics.Matrix
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +17,7 @@ import androidx.core.content.ContextCompat
 import com.kbyai.idsdk.IDSDK
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.parameter.Resolution
+import io.fotoapparat.parameter.ScaleType
 import io.fotoapparat.preview.Frame
 import io.fotoapparat.preview.FrameProcessor
 import io.fotoapparat.selector.back
@@ -23,8 +27,8 @@ import org.json.JSONObject
 class CameraActivityKt : AppCompatActivity() {
 
     val TAG = CameraActivityKt::class.java.simpleName
-    val PREVIEW_WIDTH = 720
-    val PREVIEW_HEIGHT = 1280
+    val PREVIEW_WIDTH = 1280
+    val PREVIEW_HEIGHT = 720
 
     private lateinit var cameraView: CameraView
     private lateinit var faceView: FaceView
@@ -45,10 +49,10 @@ class CameraActivityKt : AppCompatActivity() {
 
         fotoapparat = Fotoapparat.with(this)
             .into(cameraView)
-            .cameraId("100")
+//            .cameraId("100")
             .lensPosition(back())
             .frameProcessor(FaceFrameProcessor())
-            .previewResolution { Resolution(PREVIEW_HEIGHT,PREVIEW_WIDTH) }
+            .previewResolution { Resolution(PREVIEW_WIDTH,PREVIEW_HEIGHT) }
             .build()
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -56,6 +60,7 @@ class CameraActivityKt : AppCompatActivity() {
         ) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 1)
         } else {
+            faceView.setScaleType(fotoapparat.scaleType)
             fotoapparat.start()
         }
     }
@@ -99,8 +104,15 @@ class CameraActivityKt : AppCompatActivity() {
                 return
             }
 
-            val bitmap = IDSDK.yuv2Bitmap(frame.image, frame.size.width, frame.size.height, 6)
-            val result = IDSDK.idcardRecognition(bitmap)
+//            val bitmap = IDSDK.yuv2Bitmap(frame.image, frame.size.width, frame.size.height, 6)
+//            val halfWidth = frame.size.width / 2f
+//            val halfHeight = frame.size.height / 2f
+//            val matrix = Matrix()
+//            matrix.postRotate(-frame.rotation.toFloat(), halfWidth, halfHeight)
+//            matrix.postRotate(-frame.rotation.toFloat())
+//            val rbitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            val result = IDSDK.idcardRecognition(frame.image)
+            frame.image.recycle()
 
             try {
                 val jsonResult = JSONObject(result)
@@ -115,12 +127,13 @@ class CameraActivityKt : AppCompatActivity() {
                 positionRect = Rect(x1, y1, x2, y2)
 
                 Log.d(TAG, "process: quality = $quality")
+                Log.d(TAG, "process: position = $positionRect")
 
                 if (quality > 86 && (documenName != "Unknown" || hasMrz == true)) {
                     recognized = true
 
                     runOnUiThread {
-                        faceView.setFrameSize(Size(bitmap.width, bitmap.height))
+                        faceView.setFrameSize(Size(frame.width, frame.height))
                         faceView.setDocumentInfos(positionRect, documenName)
                     }
 
@@ -137,8 +150,10 @@ class CameraActivityKt : AppCompatActivity() {
             }
 
             runOnUiThread {
-                faceView.setFrameSize(Size(bitmap.width, bitmap.height))
+                faceView.setFrameSize(Size(frame.width, frame.height))
                 faceView.setDocumentInfos(positionRect, documenName)
+                faceView.clear()
+//                faceView.add(FaceGraphicOverlay(faceView, frame.image))
             }
         }
     }
