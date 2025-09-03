@@ -1,7 +1,7 @@
 package com.kbyai.idcardrecognition;
 
 
-import static io.fotoapparat.util.CameraUtilsKt.projectImage;
+import static io.fotoapparat.util.ImageUtilsKt.projectImage;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,7 +10,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Size;
 import android.view.View;
 
@@ -19,9 +18,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.fotoapparat.parameter.Resolution;
 import io.fotoapparat.parameter.ScaleType;
-import io.fotoapparat.util.CameraUtils;
 
 public class FaceView extends View {
 

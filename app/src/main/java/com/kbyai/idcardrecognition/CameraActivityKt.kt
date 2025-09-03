@@ -6,17 +6,18 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.kbyai.idsdk.IDSDK
 import io.fotoapparat.Fotoapparat
-import io.fotoapparat.image.BitmapUtils
 import io.fotoapparat.parameter.Resolution
 import io.fotoapparat.preview.Frame
 import io.fotoapparat.preview.FrameProcessor
 import io.fotoapparat.selector.back
+import io.fotoapparat.util.ImageUtils
 import io.fotoapparat.view.CameraView
 import org.json.JSONObject
 
@@ -100,9 +101,11 @@ class CameraActivityKt : AppCompatActivity() {
                 return
             }
 
-            val bitmap = BitmapUtils.nv21BufferToBitmap(frame.image, frame.width, frame.height, frame.rotation)
+            val bitmap = ImageUtils.nv21BufferToBitmap(frame.image, frame.width, frame.height, frame.rotation)
             val result = IDSDK.idcardRecognition(bitmap)
 
+            Log.d(TAG, "process: image w = ${frame.width}, h = ${frame.height}, r = ${frame.rotation}")
+            
             try {
                 val jsonResult = JSONObject(result)
                 val positionObj = jsonResult["Position"] as JSONObject
